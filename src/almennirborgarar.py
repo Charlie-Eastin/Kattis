@@ -13,8 +13,6 @@ people = int(people) + 1
 grills = list(map(int, file.readline().strip().split()))
 #grills = list(map(int, sys.stdin.readline().strip().split()))
 
-#print(grills)
-
 least_common_multiple = reduce(lcm, grills)
 greatest_common_factor = reduce(math.gcd, grills)
 
@@ -22,29 +20,39 @@ seconds = 0
 
 grill_increment = 0
 
-for grill in grills:
-    grill_increment = grill_increment + (least_common_multiple // grill)
+grill_increment = sum(least_common_multiple // grill for grill in grills)
 
-remainder = False
-if (int(people / grill_increment) != 0):
-    people = int(people / grill_increment)
-    seconds = people * least_common_multiple
-    remainder = True
+cycles = people // grill_increment
+seconds = cycles * least_common_multiple
+people = people - cycles * grill_increment
 
-int_seconds = int(seconds)
-current_time = greatest_common_factor
-if seconds != int_seconds or remainder == False:
-    while people > 0:
-        for grill in grills:
-            if current_time % grill == 0:
-                people -= 1
-        if (people <= 0):
+if (people > 0):
+    grill_available = {}
+    for grill in grills:
+        for i in range(grill, (grill * people) + 1, grill):
+            if i not in grill_available:
+                grill_available[i] = 1
+            else:
+                grill_available[i] = grill_available[i] + 1
+    
+    grill_available = dict(sorted(grill_available.items()))
+
+    seconds_elapsed = 0
+
+    for i in grill_available:
+        if people > 0:
+            people = people - grill_available[i]
+        else:
             break
-        current_time += greatest_common_factor
+        if (seconds_elapsed == 0):
+            seconds_elapsed += i
+        else:
+            seconds_elapsed += i - seconds_elapsed
+    seconds += seconds_elapsed
 
-int_seconds += current_time
 
-print(int_seconds)
+
+print(seconds)
 
 
     
