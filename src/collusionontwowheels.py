@@ -33,7 +33,7 @@ for i, j, distance in edges:
 #print(adjacency_list)
 
 low = 0
-high = 100
+high = max_distance
 
 def recursive_search(adjacency_list, colors, max_distance):
     for node in range(customer_count):
